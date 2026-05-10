@@ -14,7 +14,7 @@ import Navbar from './components/Navbar';
 
 const App = () => {
   return (
-    <div className=''>
+    <div className='px-4 sm"px-[vw] md:px-[7vw] lg:px-[9vw]'>
       {/* Navbar */}
       <Navbar />
       {/* Pages */}
