@@ -14,7 +14,7 @@ const Collection = () => {
   const [ subCategory, setSubCategory ] = useState([]);
 
   const [ sortType, setSortType ] = useState('relavent');
-
+  
   const toggleCategory = (e) => {
     if(category.includes(e.target.value)) {
       setCategory(prev => prev.filter(item => item !== e.target.value))
