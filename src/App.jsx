@@ -13,11 +13,17 @@ import Orders from './pages/Orders';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import SearchBar from './components/SearchBar';
+import 'react-toastify/dist/ReactToastify.css';
+
+// 
+import { ToastContainer, toast } from 'react-toastify';
+
 
 const App = () => {
   return (
     <div className='px-4 sm"px-[vw] md:px-[7vw] lg:px-[9vw]'>
       {/* Navbar */}
+      <ToastContainer />
       <Navbar />
       <SearchBar />
       {/* Pages */}
