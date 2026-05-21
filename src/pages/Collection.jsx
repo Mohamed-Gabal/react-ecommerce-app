@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
 import Title from '../components/Title';
@@ -8,7 +8,6 @@ const Collection = () => {
 
   const { products, search, showSearch } = useContext(ShopContext);
   const [ showFilter, setShowFilter ] = useState(false);
-  const [ filterProducts, setFilterProducts ] = useState([]);
 
   const [ category, setCategory ] = useState([]);
   const [ subCategory, setSubCategory ] = useState([]);
@@ -33,50 +32,41 @@ const Collection = () => {
     }
   }
 
-  const applyFilter = () => {
-    let productsCopy = products.slice();
+  const filterProducts = useMemo(() => {
+    let productsCopy = [...products];
 
+    // Search
     if(showSearch && search) {
       productsCopy = productsCopy.filter(item => item.name.toLowerCase().includes(search.toLowerCase()));
     }
 
+    // Category Filter
     if(category.length > 0) {
       productsCopy = productsCopy.filter(item => category.includes(item.category));
     }
 
+    // SubCategory Filter
     if(subCategory.length > 0) {
-      productsCopy = productsCopy.filter(item => subCategory.includes(item.subCategory))
+      productsCopy = productsCopy.filter(item => subCategory.includes(item.subCategory));
     }
 
-    setFilterProducts(productsCopy);
-  }
+    return productsCopy;
+  }, [products, search, showSearch, category, subCategory]);
 
-  const sortProduct = () => {
-    let fpCopy = filterProducts.slice();
+  const sortedProducts = useMemo(() => {
+    let fpCopy = [...filterProducts];
 
     switch (sortType) {
-      case 'low-high':
-        setFilterProducts(fpCopy.sort((a,b) => a.price - b.price));
-        break;
-      
-      case 'high-low':
-        setFilterProducts(fpCopy.sort((a,b) => b.price - a.price));
-        break;
+      case "low-high":
+        return fpCopy.sort((a, b) => a.price - b.price);
 
+      case "high-low":
+        return fpCopy.sort((a, b) => b.price - a.price);
+        
       default:
-        applyFilter();
-        break;
+        return fpCopy;  
     }
-  }
-
-
-    useEffect (() => {
-    applyFilter()
-  }, [category, subCategory, search, showSearch])
-
-  useEffect(() => {
-    sortProduct();
-  }, [sortType])
+  }, [filterProducts, sortType]) 
 
   return (
     <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t">
@@ -141,8 +131,8 @@ const Collection = () => {
 
         {/* Map Products */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6">
-          {filterProducts.map((item, index) => (
-            <ProductItems key={index} id={item._id} name={item.name} price={item.price} image={item.image}/>
+          {sortedProducts.map((item) => (
+            <ProductItems key={item._id} id={item._id} name={item.name} price={item.price} image={item.image}/>
           ))}
         </div>
       </div>
